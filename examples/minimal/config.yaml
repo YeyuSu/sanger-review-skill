@@ -1,0 +1,9 @@
+references: refs
+reads: reads
+out: outputs/sanger_review
+feature: CDS
+reference-regex: "sample(?P<sample>\\d+)"
+sample-regex: ".*sample(?P<sample>\\d+)-(?P<clone>\\d+)_(?P<primer>[^_]+).*\\.ab1$"
+target-sites: targets.csv
+mode: target-first
+chromatograms: problem

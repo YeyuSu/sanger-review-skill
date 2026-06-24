@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sanger Review"
+  short_description: "Review AB1 reads and call candidate clones."
+  default_prompt: "Use $sanger-review to review Sanger AB1 sequencing reads against reference sequences and identify candidate clones."

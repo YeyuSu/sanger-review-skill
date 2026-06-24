@@ -1,0 +1,15 @@
+[project]
+name = "sanger-review-skill"
+version = "0.1.0"
+description = "Codex skill and CLI for reviewing Sanger AB1 reads against reference sequences."
+requires-python = ">=3.9"
+dependencies = [
+  "biopython",
+  "openpyxl",
+  "matplotlib",
+  "pyyaml"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["sanger-review/scripts"]
+testpaths = ["tests"]
