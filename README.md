@@ -55,4 +55,5 @@ The `Summary` sheet includes `candidate_clones`, so multiple usable clones can b
 
 ## License
 
-MIT
+Apache-2.0
+
