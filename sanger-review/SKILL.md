@@ -7,6 +7,56 @@ description: Review Sanger sequencing AB1 chromatograms against reference sequen
 
 Use this skill to review Sanger `.ab1` reads against reference sequences and identify usable candidate clones.
 
+## Natural language use
+
+When the user asks in natural language, translate the request into a CLI run and report review artifacts. Typical prompts include:
+
+- "Use $sanger-review to review AB1 files in `reads/` against SnapGene maps in `refs/`; the feature is `CDS`; list all candidate clones."
+- "Compare my Sanger results with `plasmid.gbk`, review region `149-1228`, trim the first and last 100 base calls, and generate an Excel report."
+- "The sequencing folder is `F029707`; maps are in `maps/`; AB1 files are in `reads/`; target mutations are in `targets.csv`; filename style is `mut3-1_T7_A01.ab1`."
+- "Plot chromatograms for these `.ab1` files so suspicious sites can be manually inspected."
+
+If a request is incomplete, infer from available files first. Ask only when a required high-impact input is missing, especially the reference file, reads folder, target feature/region, target-site table, or filename parsing pattern.
+
+## Files users should prepare
+
+Required inputs:
+
+- Sanger reads: `.ab1` files, preferably named with sample/mutant, clone, and primer information.
+- Reference sequence: SnapGene `.dna`, GenBank `.gb/.gbk`, or FASTA `.fa/.fasta`.
+- Target definition: one of `--feature`, `--region`, `--target-sites`, or mutation names encoded in reference filenames with `--targets-from-reference-names`.
+
+Useful optional inputs:
+
+- `targets.csv` or `.xlsx`: expected mutation/target positions with `sample`, `name`, and either `aa_position` or `codon_start`.
+- `manual_overrides.csv` or `.xlsx`: columns `sample`, `clone`, `manual_call`, and `note` for human-reviewed calls.
+- A filename regex if sample/clone/primer cannot be inferred from names.
+- Sequencing metadata from the vendor, when available.
+
+Example project layout:
+
+```text
+project/
+  refs/
+    mut3.dna
+    mut4.dna
+  reads/
+    mut3-1_T7_A01.ab1
+    mut3-1_T7term_A02.ab1
+    mut3-2_T7_A03.ab1
+  targets.csv
+  manual_overrides.csv
+```
+
+## Workflow
+
+1. Locate reference files and `.ab1` reads from the user request or current workspace.
+2. Determine the target review scope using `--feature`, `--region`, `--target-sites`, or `--targets-from-reference-names`.
+3. Choose or infer `--sample-regex` so sample and clone IDs are parsed correctly. Prefer listing all passing clones over choosing only one best clone.
+4. Run `scripts/sanger_review.py` with `--trim-read-ends 100` unless the user specifies a different end-trimming rule.
+5. Generate chromatograms with `--chromatograms problem` by default, or `all` when the user asks to inspect peaks broadly.
+6. Summarize `Summary.candidate_clones`, blocking differences, manual overrides, and report paths.
+
 ## Quick start
 
 ```bash
